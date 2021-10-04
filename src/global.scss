@@ -36,3 +36,7 @@
     font-size: 12px;
     color: lightgray;
 }
+
+.tab-selected {
+    color: var( --ion-color-primary ) !important;
+}

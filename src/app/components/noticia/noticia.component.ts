@@ -13,12 +13,36 @@ export class NoticiaComponent implements OnInit {
 
   @Input() noticia: Article;
   @Input() indice: number;
+  @Input() enFavoritos: boolean;
 
   constructor( private actionSheetCtrl:  ActionSheetController, private socialSharing: SocialSharing, private dataLocalService: DataLocalService) { }
 
-  ngOnInit() {}
+  ngOnInit() {
+    console.log(this.enFavoritos);
+    
+  }
 
   async lanzarMenu(){
+
+    let guardarBorrarBtn;
+    if(this.enFavoritos) {
+      guardarBorrarBtn = {
+        text: 'Borrar Favorito',
+        icon: 'trash',
+        handler: () => {
+          this.dataLocalService.borrarNoticia(this.noticia);
+        }
+      }
+    }else{
+      guardarBorrarBtn = {
+        text: 'Favorito',
+        icon: 'star',
+        handler: () => {
+          this.dataLocalService.guardarNoticia(this.noticia);
+        }
+      }
+    }
+
     const actionSheet = await this.actionSheetCtrl.create({
       buttons: [ {
         text: 'Compartir',
@@ -32,13 +56,9 @@ export class NoticiaComponent implements OnInit {
           )
         }
         
-      }, {
-        text: 'Favorito',
-        icon: 'star',
-        handler: () => {
-          this.dataLocalService.guardarNoticia(this.noticia);
-        }
-      }, {
+      }, 
+      guardarBorrarBtn,
+      {
         text: 'Cancel',
         icon: 'close',
         role: 'cancel',
