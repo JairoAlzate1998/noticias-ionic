@@ -1,6 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ActionSheetController } from '@ionic/angular';
 import { Article } from '../../interfaces/interfaces';
+import { SocialSharing } from '@ionic-native/social-sharing/ngx';
+import { DataLocalService } from '../../services/data-local.service';
 
 @Component({
   selector: 'app-noticia',
@@ -12,7 +14,7 @@ export class NoticiaComponent implements OnInit {
   @Input() noticia: Article;
   @Input() indice: number;
 
-  constructor( private actionSheetCtrl:  ActionSheetController) { }
+  constructor( private actionSheetCtrl:  ActionSheetController, private socialSharing: SocialSharing, private dataLocalService: DataLocalService) { }
 
   ngOnInit() {}
 
@@ -22,14 +24,19 @@ export class NoticiaComponent implements OnInit {
         text: 'Compartir',
         icon: 'share',
         handler: () => {
-          console.log('Share clicked');
+          this.socialSharing.share(
+            this.noticia.title,
+            this.noticia.source.name,
+            '',
+            this.noticia.url
+          )
         }
         
       }, {
         text: 'Favorito',
         icon: 'star',
         handler: () => {
-          console.log('Favorite clicked');
+          this.dataLocalService.guardarNoticia(this.noticia);
         }
       }, {
         text: 'Cancel',
